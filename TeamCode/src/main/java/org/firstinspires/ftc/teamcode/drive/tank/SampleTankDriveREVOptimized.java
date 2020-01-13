@@ -49,10 +49,10 @@ public class SampleTankDriveREVOptimized extends SampleTankDriveBase {
         // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
         // add/remove motors depending on your robot (e.g., 6WD)
-        ExpansionHubMotor leftFront = hardwareMap.get(ExpansionHubMotor.class, "leftFront");
-        ExpansionHubMotor leftRear = hardwareMap.get(ExpansionHubMotor.class, "leftBack");
-        ExpansionHubMotor rightRear = hardwareMap.get(ExpansionHubMotor.class, "rightBack");
-        ExpansionHubMotor rightFront = hardwareMap.get(ExpansionHubMotor.class, "rightFront");
+        ExpansionHubMotor leftFront = hardwareMap.get(ExpansionHubMotor.class, "lf"); //forward = negative
+        ExpansionHubMotor leftRear = hardwareMap.get(ExpansionHubMotor.class, "lb");
+        ExpansionHubMotor rightRear = hardwareMap.get(ExpansionHubMotor.class, "rb"); //encoder is in opposite direction; forward = positive
+        ExpansionHubMotor rightFront = hardwareMap.get(ExpansionHubMotor.class, "rf");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
         leftMotors = Arrays.asList(leftFront, leftRear);
@@ -70,8 +70,10 @@ public class SampleTankDriveREVOptimized extends SampleTankDriveBase {
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
     }
@@ -104,10 +106,13 @@ public class SampleTankDriveREVOptimized extends SampleTankDriveBase {
         for (DcMotorEx leftMotor : leftMotors) {
             leftSum += encoderTicksToInches(bulkData.getMotorCurrentPosition(leftMotor));
         }
-        for (DcMotorEx rightMotor : rightMotors) {
-            rightSum += encoderTicksToInches(bulkData.getMotorCurrentPosition(rightMotor));
-        }
-        return Arrays.asList(leftSum / leftMotors.size(), rightSum / rightMotors.size());
+        /*for (DcMotorEx rightMotor : rightMotors) {
+
+        }*/
+        rightSum += encoderTicksToInches(bulkData.getMotorCurrentPosition(rightMotors.get(0)));
+        rightSum += encoderTicksToInches(-bulkData.getMotorCurrentPosition(rightMotors.get(1)));
+
+        return Arrays.asList(-leftSum / leftMotors.size(), -rightSum / rightMotors.size());
     }
 
     @Override
@@ -122,10 +127,14 @@ public class SampleTankDriveREVOptimized extends SampleTankDriveBase {
         for (DcMotorEx leftMotor : leftMotors) {
             leftSum += encoderTicksToInches(bulkData.getMotorVelocity(leftMotor));
         }
-        for (DcMotorEx rightMotor : rightMotors) {
+        /*for (DcMotorEx rightMotor : rightMotors) {
             rightSum += encoderTicksToInches(bulkData.getMotorVelocity(rightMotor));
-        }
-        return Arrays.asList(leftSum / leftMotors.size(), rightSum / rightMotors.size());
+        }*/
+
+        rightSum += encoderTicksToInches(bulkData.getMotorVelocity(rightMotors.get(0)));
+        rightSum += encoderTicksToInches(-bulkData.getMotorVelocity(rightMotors.get(1)));
+
+        return Arrays.asList(-leftSum / leftMotors.size(), -rightSum / rightMotors.size());
     }
 
     @Override

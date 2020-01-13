@@ -154,9 +154,9 @@ public class TeleOpTest extends LinearOpMode {
         double newTarget = 0;
         double counts;
 
-        double WHEEL_DIAMETER_INCHES = 4.0;
-        double COUNTS_PER_MOTOR_REV = 1680;
-        double GEAR_REDUCTION = 1.5; //should be 1.5
+//        double WHEEL_DIAMETER_INCHES = 4.0;
+//        double COUNTS_PER_MOTOR_REV = 1680;
+//        double GEAR_REDUCTION = 1.5; //needs to be changed
 
         if (!gamepadRateLimit.hasExpired()) {
             return;
