@@ -135,10 +135,10 @@ public class Camera {
 
             if (allianceColor.equalsIgnoreCase("blue")) {
                 left_rect = new int[]{
-                        (int) (input.cols() * (9f / 32f)),
-                        (int) (input.rows() * (17f / 32f)),
-                        (int) (input.cols() * (17f / 32f)), //previously 11 with 17
-                        (int) (input.rows() * (21f / 32f))
+                        (int) (input.cols() * (12f / 32f)),
+                        (int) (input.rows() * (15f / 32f)),
+                        (int) (input.cols() * (20f / 32f)), //previously 11 with 17
+                        (int) (input.rows() * (19f / 32f))
 
                         /*sideways right config
                         (int) (input.cols() * (11f / 32f)),
@@ -149,10 +149,10 @@ public class Camera {
                 };
 
                 right_rect = new int[]{
-                        (int) (input.cols() * (17f / 32f)),
-                        (int) (input.rows() * (17f / 32f)),
-                        (int) (input.cols() * (25f / 32f)), //previously 19 with 25
-                        (int) (input.rows() * (21f / 32f))
+                        (int) (input.cols() * (20f / 32f)),
+                        (int) (input.rows() * (15f / 32f)),
+                        (int) (input.cols() * (28f / 32f)), //previously 19 with 25
+                        (int) (input.rows() * (19f / 32f))
 
                         /*sideways right config
                          (int) (input.cols() * (19f / 32f)),
