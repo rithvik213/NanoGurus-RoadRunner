@@ -266,6 +266,67 @@ public class Drive {
         imu.initialize(parameters);
 
     }
+    public void turnIMUTest(double angle, double speed, boolean direction) {
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        double startTime = opMode.getRuntime();
+        double deltaAngle = 0, initTime = 0, deltaTime;
+        double i = 0;
+        double error = 100; //used to start while loop
+
+        double initialPos = angles.firstAngle;
+        double currentPos = initialPos;
+        double target = 0;
+
+        if (direction) {
+            target = initialPos - angle;
+        }
+        else {
+            target = angle + initialPos;
+        }
+
+        while(opMode.opModeIsActive() && Math.abs(error) > 1) {
+            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            currentPos = angles.firstAngle;
+            error = currentPos - target;
+            //AngleWrap(error);
+
+            for(double x = 0.05; x <= 1; x+=0.05) {
+                leftFront.setPower((0.4+x));
+                leftBack.setPower((0.4+x));
+                rightFront.setPower(-(0.4+x));
+                rightBack.setPower(-(0.4+x));
+            }
+            double power = Range.clip(((error/125.0)) + i, -0.5,.5);
+
+            opMode.telemetry.addData("Current Position: ", currentPos);
+            opMode.telemetry.addData("Distance to go: ",(int) error);
+            opMode.telemetry.addData("Power: ", power);
+            opMode.telemetry.addData("Target: ",(int) target );
+
+            opMode.telemetry.update();
+
+            leftFront.setPower(power);
+            leftBack.setPower(power);
+            rightFront.setPower(-power);
+            rightBack.setPower(-power);
+
+            deltaTime = opMode.getRuntime() - initTime;
+            initTime = opMode.getRuntime();
+
+            if (Math.abs(error) < 30)
+                i += .025 * error * deltaTime;
+
+            if (i > 0.3) {
+                i = 0.3;
+            }
+        }
+        leftFront.setPower(0);
+        leftBack.setPower(0);
+        rightFront.setPower(0);
+        rightBack.setPower(0);
+    }
+
 
     /**
      *
